@@ -7,53 +7,46 @@ import { Label } from '@/shared/ui/label';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
-import { api } from '@/shared/lib/axios';
-import { storageKeys } from '@/shared/config/storage-keys';
-import useAuthStore from '@/shared/store/authStore';
 import { useRouter } from 'next/navigation';
+import { useSignUpMutation } from '../services/use-sign-up-mutation';
 
-const loginSchema = z.object({
+const signUpSchema = z.object({
+  name: z.string().min(2, { message: 'Nome obrigatório' }),
   email: z.string().email({ message: 'E-mail inválido' }),
   password: z.string().min(6, { message: 'Mínimo 6 caracteres' }),
 });
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type SignUpFormData = z.infer<typeof signUpSchema>;
 
-export function LoginForm() {
-  const { changeAuthStatus } = useAuthStore();
+export function SignUpForm() {
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<SignUpFormData>({
+    resolver: zodResolver(signUpSchema),
   });
 
-  const { mutate: login, isPending } = useMutation({
-    mutationFn: async (data: LoginFormData) => {
-      const response = await api.post('/auth/login', data);
-      return response.data;
-    },
-    onSuccess: (data) => {
-      sessionStorage.setItem(storageKeys.accessToken, data.token);
-      changeAuthStatus(true);
-      router.push('/dashboard');
-    },
-    onError: () => {
-      alert('Login falhou. Verifique suas credenciais.');
-    },
+  const { mutate: signUp, isPending } = useSignUpMutation(() => {
+    alert('Cadastro realizado com sucesso!');
+    router.push('/login');
   });
 
   return (
     <Card className="max-w-sm mx-auto mt-20">
       <CardHeader>
-        <CardTitle>Entrar na carteira</CardTitle>
+        <CardTitle>Crie sua conta</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit((data) => login(data))} className="space-y-4">
+        <form onSubmit={handleSubmit((data) => signUp(data))} className="space-y-4">
+          <div>
+            <Label htmlFor="name">Nome</Label>
+            <Input id="name" type="text" {...register('name')} />
+            {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+          </div>
+
           <div>
             <Label htmlFor="email">E-mail</Label>
             <Input id="email" type="email" {...register('email')} />
@@ -67,7 +60,7 @@ export function LoginForm() {
           </div>
 
           <Button type="submit" className="w-full" disabled={isPending}>
-            {isPending ? 'Entrando...' : 'Entrar'}
+            {isPending ? 'Criando conta...' : 'Cadastrar'}
           </Button>
         </form>
       </CardContent>
