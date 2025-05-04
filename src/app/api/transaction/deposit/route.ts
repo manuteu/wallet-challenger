@@ -1,5 +1,5 @@
 import { prisma } from '@/shared/lib/prisma';
-import { depositSchema } from '@/modules/wallet/schemas';
+import { depositApiSchema } from '@/modules/transaction/schemas';
 import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/shared/utils/auth-helpers';
 
@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   const userId = userOrError;
 
   const body = await req.json();
-  const parsed = depositSchema.safeParse(body);
+  const parsed = depositApiSchema.safeParse(body);
 
   if (!parsed.success) {
     return NextResponse.json({ error: 'Dados inválidos', issues: parsed.error.flatten().fieldErrors }, { status: 400 });

@@ -1,14 +1,8 @@
 import { prisma } from '@/shared/lib/prisma';
-import { revertSchema } from '@/modules/wallet/schemas';
+import { revertSchema } from '@/modules/transaction/schemas';
 import { NextResponse } from 'next/server';
-import { getUserFromRequest } from '@/shared/utils/auth-helpers';
 
 export async function POST(req: Request) {
-  const userOrError = await getUserFromRequest(req);
-  if (userOrError instanceof NextResponse) return userOrError;
-
-  const userId = userOrError;
-
   const body = await req.json();
   const parsed = revertSchema.safeParse(body);
   if (!parsed.success) {
@@ -37,27 +31,36 @@ export async function POST(req: Request) {
     );
   }
 
-  if (transaction.senderId !== userId) {
+  try {
+    await prisma.$transaction(async (tx) => {
+      if (transaction.type === 'DEPOSIT') {
+        await tx.user.update({
+          where: { id: transaction.senderId },
+          data: { balance: { decrement: transaction.amount } },
+        });
+      }
+      if (transaction.type === 'TRANSFER') {
+        await tx.user.update({
+          where: { id: transaction.senderId },
+          data: { balance: { increment: transaction.amount } },
+        });
+
+        await tx.user.update({
+          where: { id: transaction.receiverId },
+          data: { balance: { decrement: transaction.amount } },
+        });
+      }
+
+      await tx.transaction.update({
+        where: { id: transactionId },
+        data: { status: 'REVERSED' },
+      });
+    });
+    return NextResponse.json({ message: 'Transação revertida com sucesso' });
+  } catch (error) {
     return NextResponse.json(
-      { error: 'Não autorizado a reverter esta transação' },
-      { status: 403 }
+      { error: 'Internal server error' },
+      { status: 500 }
     );
   }
-
-  await prisma.$transaction([
-    prisma.transaction.update({
-      where: { id: transactionId },
-      data: { status: 'REVERSED' },
-    }),
-    prisma.user.update({
-      where: { id: transaction.senderId },
-      data: { balance: { increment: transaction.amount } },
-    }),
-    prisma.user.update({
-      where: { id: transaction.receiverId },
-      data: { balance: { decrement: transaction.amount } },
-    }),
-  ]);
-
-  return NextResponse.json({ message: 'Transação revertida com sucesso' });
 }
