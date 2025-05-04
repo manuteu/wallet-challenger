@@ -1,3 +1,4 @@
 export const storageKeys = {
-  accessToken: 'session_storage_token',
+  accessToken: '@wallet/token',
+  user: '@wallet/user',
 };
