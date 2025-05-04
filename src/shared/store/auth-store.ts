@@ -20,11 +20,12 @@ export const useAuthStore = () => {
   const changeAuthStatus = authStore((state) => state.changeAuthStatus);
 
   useEffect(() => {
-    const token = sessionStorage.getItem(storageKeys.accessToken);
+
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem(storageKeys.accessToken) : null
     changeAuthStatus(!!token);
   }, []);
 
   return { isAuthenticated, changeAuthStatus };
 };
 
-export default useAuthStore;
+export default authStore;
