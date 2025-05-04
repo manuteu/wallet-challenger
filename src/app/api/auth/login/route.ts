@@ -19,7 +19,7 @@ export async function POST(req: Request) {
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (!user || !(await comparePassword(password, user.password))) {
-    return NextResponse.json({ error: 'Credenciais inválidas' }, { status: 401 });
+    return NextResponse.json({ error: 'Credenciais inválidas' }, { status: 400 });
   }
 
   const token = generateToken({ userId: user.id });
