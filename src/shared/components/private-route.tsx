@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuthStore } from '@/shared/store/authStore';
+import { useAuthStore } from '@/shared/store/auth-store';
 import { useRouter } from 'next/navigation';
 import { useEffect, ReactNode } from 'react';
 
