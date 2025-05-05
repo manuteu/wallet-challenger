@@ -37,3 +37,23 @@ npm install
 # Gerar o banco local e rodar o projeto
 npx prisma migrate dev
 npm run dev
+
+## Docker
+
+```bash
+docker-compose up --build
+```
+
+## Autenticação
+
+- Após login, o token é salvo no sessionStorage junto com os dados do usuário.
+- A aplicação protege rotas via redirecionamento e checagem de token.
+- Rotas que retornam 401 acionam automaticamente o logout.
+
+## Libs utilizadas
+
+- Tailwind CSS
+- ShadCN UI
+- Sonner (toasts)
+- React Hook Form + Zod
+- Axios com interceptors
