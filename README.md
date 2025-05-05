@@ -37,10 +37,10 @@ npm install
 # Gerar o banco local e rodar o projeto
 npx prisma migrate dev
 npm run dev
-
-## Docker
+```
 
 ```bash
+## Docker
 docker-compose up --build
 ```
 
