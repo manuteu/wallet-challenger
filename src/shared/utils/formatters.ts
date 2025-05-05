@@ -9,11 +9,6 @@ export const formatCurrency = (value: string | number): string => {
   }).format(number);
 };
 
-export const parseBRLToNumber = (value: string) => {
-  const numeric = value.replace(/[^\d,-]/g, '').replace(',', '.');
-  return parseInt(numeric) || 0;
-};
-
 export const translateTransactionsStatus = (value: StatusType) => {
   const status: Record<StatusType, string> = {
     COMPLETED: 'Concluída',
