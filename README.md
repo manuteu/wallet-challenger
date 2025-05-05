@@ -10,10 +10,8 @@ Projeto fullstack desenvolvido em Next.js 15 com App Router, Prisma, SQLite, Rea
 - Visualização de saldo
 - Depósitos e transferências entre usuários
 - Reversão de transações
-- Interface moderna e responsiva inspirada em bancos digitais
 - Feedbacks visuais usando Sonner + padrão Observer
 - Proteção de rotas (públicas e privadas)
-- Scroll interno inteligente nas transações
 - Dados persistidos no SessionStorage
 
 ---
@@ -25,7 +23,7 @@ Projeto fullstack desenvolvido em Next.js 15 com App Router, Prisma, SQLite, Rea
 - **Zustand** para estados locais e persistentes
 - **React Query v5** para dados assíncronos
 - **Prisma** + **SQLite** no backend
-- **Docker** com build multistage
+- **Docker** com build
 - Separação clara entre responsabilidades: componentes, serviços, hooks e stores
 
 ---
