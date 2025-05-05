@@ -61,7 +61,7 @@ export function RegisterForm() {
             </div>
 
             <Button type="submit" className="w-full mt-5" disabled={isPending}>
-              {isPending ? <Spinner size="sm" /> : 'Cadastrar'}
+              {isPending ? <Spinner size="sm" className='border-secondary border-t-transparent' /> : 'Cadastrar'}
             </Button>
 
             <Button type='button' variant='ghost' className="w-full" onClick={() => router.back()}>
